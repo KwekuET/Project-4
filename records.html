@@ -19,7 +19,6 @@
   <script>
     const idSelect = document.getElementById("idSelect");
 
-    // Fill the drop-down with every account ID
     fetch("/ids")
       .then(response => response.json())
       .then(ids => {
@@ -28,7 +27,6 @@
         });
       });
 
-    // Show the table when an ID is picked
     idSelect.addEventListener("change", async () => {
       const response = await fetch("/form/" + idSelect.value);
       const data = await response.json() || {};
