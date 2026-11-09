@@ -43,7 +43,6 @@
   <script>
     const id = sessionStorage.getItem("id");
 
-    // Load saved answers
     fetch("/form/" + id)
       .then(response => response.json())
       .then(data => {
@@ -57,7 +56,6 @@
         }
       });
 
-    // Save answers
     document.getElementById("surveyForm").addEventListener("submit", async (event) => {
       event.preventDefault();
 
