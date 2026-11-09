@@ -24,13 +24,11 @@
     const password = document.getElementById("password");
     const remember = document.getElementById("remember");
 
-    // On page load, restore the checkbox and username
     remember.checked = localStorage.getItem("remember") === "yes";
     if (remember.checked) {
       username.value = localStorage.getItem("username");
     }
 
-    // Save the checkbox state whenever it changes
     remember.addEventListener("change", () => {
       if (remember.checked) {
         localStorage.setItem("remember", "yes");
