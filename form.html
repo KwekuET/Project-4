@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Survey Form</h1>
+  <a href="records.html">Go to Records Page</a>
+
+  <form id="surveyForm">
+    <fieldset>
+      <legend>Study Habits</legend>
+
+      <label for="subject">Favorite subject</label><br>
+      <input type="text" id="subject"><br>
+
+      <label for="year">Year in school</label><br>
+      <select id="year">
+        <option value="">-- Choose --</option>
+        <option value="Freshman">Freshman</option>
+        <option value="Sophomore">Sophomore</option>
+        <option value="Junior">Junior</option>
+        <option value="Senior">Senior</option>
+      </select><br>
+
+      <p>When do you study?</p>
+      <input type="radio" name="time" id="morning" value="Morning">
+      <label for="morning">Morning</label>
+      <input type="radio" name="time" id="night" value="Night">
+      <label for="night">Night</label><br><br>
+
+      <label for="hours">Hours per week</label><br>
+      <input type="number" id="hours"><br>
+
+      <label for="goals">Study goals</label><br>
+      <textarea id="goals" rows="6" cols="40"></textarea><br>
+
+      <button type="submit">Submit</button>
+    </fieldset>
+  </form>
+
+  <script>
+    const id = sessionStorage.getItem("id");
+
+    // Load saved answers
+    fetch("/form/" + id)
+      .then(response => response.json())
+      .then(data => {
+        if (data) {
+          document.getElementById("subject").value = data.subject;
+          document.getElementById("year").value = data.year;
+          document.getElementById("hours").value = data.hours;
+          document.getElementById("goals").value = data.goals;
+          if (data.time === "Morning") document.getElementById("morning").checked = true;
+          if (data.time === "Night") document.getElementById("night").checked = true;
+        }
+      });
+
+    // Save answers
+    document.getElementById("surveyForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      let time = "";
+      if (document.getElementById("morning").checked) time = "Morning";
+      if (document.getElementById("night").checked) time = "Night";
+
+      const data = {
+        subject: document.getElementById("subject").value,
+        year: document.getElementById("year").value,
+        time: time,
+        hours: document.getElementById("hours").value,
+        goals: document.getElementById("goals").value
+      };
+
+      await fetch("/form/" + id, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      alert("Saved!");
+    });
+  </script>
+</body>
+</html>

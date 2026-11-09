@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Records</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Records</h1>
+  <a href="form.html">Go to Form Page</a><br><br>
+
+  <label for="idSelect">Choose an account ID</label><br>
+  <select id="idSelect">
+    <option value="">-- Choose --</option>
+  </select>
+
+  <table id="table"></table>
+  <p id="empty"></p>
+
+  <script>
+    const idSelect = document.getElementById("idSelect");
+
+    // Fill the drop-down with every account ID
+    fetch("/ids")
+      .then(response => response.json())
+      .then(ids => {
+        ids.forEach(id => {
+          idSelect.innerHTML += "<option value='" + id + "'>" + id + "</option>";
+        });
+      });
+
+    // Show the table when an ID is picked
+    idSelect.addEventListener("change", async () => {
+      const response = await fetch("/form/" + idSelect.value);
+      const data = await response.json() || {};
+
+      const labels = {
+        subject: "Favorite Subject",
+        year: "Year in School",
+        time: "Study Time",
+        hours: "Hours per Week",
+        goals: "Study Goals"
+      };
+
+      let rows = "";
+      let emptyList = [];
+      for (const key in labels) {
+        const value = data[key] || "";
+        if (value === "") emptyList.push(labels[key]);
+        rows += "<tr><th>" + labels[key] + "</th><td>" + value + "</td></tr>";
+      }
+
+      document.getElementById("table").innerHTML = rows;
+      document.getElementById("empty").textContent =
+        emptyList.length > 0 ? "Left empty: " + emptyList.join(", ") : "";
+    });
+  </script>
+</body>
+</html>
